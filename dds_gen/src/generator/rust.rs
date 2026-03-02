@@ -394,11 +394,7 @@ impl<'a> RustGenerator<'a> {
 
     #[inline]
     fn enumerator(&mut self, pair: IdlPair) {
-        self.generate(
-            pair.into_inner()
-                .next()
-                .expect("Must have an element according to the grammar"),
-        )
+        self.writer.push_str(pair.as_str())
     }
 
     fn member(&mut self, pair: IdlPair) {
@@ -952,6 +948,29 @@ mod tests {
         assert_eq!(
             &writer,
             "#[derive(Debug, dust_dds::infrastructure::type_support::DdsType)]\npub enum MyEnum {A,B,C,}\n",
+        );
+    }
+
+    #[test]
+    fn parse_enum_with_reserved_enumerators() {
+        let p = IdlParser::parse(
+            Rule::enum_dcl,
+            "enum ZoomEnum {
+                NONE_Z,
+                IN,
+                OUT
+            };",
+        )
+        .unwrap()
+        .next()
+        .unwrap();
+        let mut writer = String::new();
+        let mut rust_generator = RustGenerator::new(&mut writer);
+        rust_generator.generate(p);
+
+        assert_eq!(
+            &writer,
+            "#[derive(Debug, dust_dds::infrastructure::type_support::DdsType)]\npub enum ZoomEnum {NONE_Z,IN,OUT,}\n",
         );
     }
 
