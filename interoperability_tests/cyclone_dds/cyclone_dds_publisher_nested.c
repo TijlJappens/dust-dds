@@ -1,5 +1,6 @@
 #include "ddsc/dds.h"
 #include "NestedType.h"
+#include "nested_data.h"
 
 int main(int argc, char *argv[])
 {
@@ -53,14 +54,8 @@ int main(int argc, char *argv[])
 		DDS_FATAL("dds_waitset_wait: %s\n", dds_strretcode(-rc));
 	}
 
-	interoperability_test_Inner msg_inner = {.a = 1, .b = 2, .c = 3};
-	interoperability_test_Nested msg = {.inner = msg_inner, .level = 10, .other = 20, .last = 70};
-	msg.value_list._buffer = dds_sequence_int64_allocbuf(3);
-	msg.value_list._length = 3;
-	msg.value_list._release = true;
-	msg.value_list._buffer[0] = 30;
-	msg.value_list._buffer[1] = 40;
-	msg.value_list._buffer[2] = 50;
+	interoperability_test_Nested msg = {0};
+	interoperability_test_nested_fill(&msg);
 
 	dds_write(data_writer, &msg);
 

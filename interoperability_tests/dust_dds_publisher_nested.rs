@@ -1,6 +1,7 @@
 include!("target/idl/nested_type.rs");
+mod nested_data;
 
-use self::interoperability::test::{Inner, Nested};
+use self::interoperability::test::Nested;
 use dust_dds::{
     domain::domain_participant_factory::DomainParticipantFactory,
     infrastructure::{
@@ -68,13 +69,7 @@ fn main() {
 
     wait_set.wait(Duration::new(60, 0)).unwrap();
 
-    let data = Nested {
-        inner: Inner { a: 1, b: 2, c: 3 },
-        level: 10,
-        other: 20,
-        value_list: vec![30, 40, 50],
-        last: 60,
-    };
+    let data = nested_data::make_nested();
     writer.write(data, None).unwrap();
 
     writer

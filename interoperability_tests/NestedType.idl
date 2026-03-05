@@ -11,6 +11,9 @@ module interoperability {
             int64 level;
             int32 other;
             sequence <int64, 100> value_list;
+            Inner inner_array[10];
+            float float_array[5];
+
             int32 last;
         };
     };

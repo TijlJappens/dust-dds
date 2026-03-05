@@ -1,4 +1,5 @@
 include!("target/idl/nested_type.rs");
+mod nested_data;
 
 use self::interoperability::test::Nested;
 use dust_dds::{
@@ -74,6 +75,10 @@ fn main() {
 
     let data = samples[0].data.as_ref().unwrap();
     println!("Received: {data:?}",);
+    assert!(
+        nested_data::is_expected_nested(data),
+        "Received Nested data does not match expected test data: {data:?}"
+    );
 
     // Sleep to allow sending acknowledgements
     std::thread::sleep(std::time::Duration::from_secs(2));

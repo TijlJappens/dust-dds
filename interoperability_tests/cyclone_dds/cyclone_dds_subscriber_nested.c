@@ -1,5 +1,6 @@
 #include "ddsc/dds.h"
 #include "NestedType.h"
+#include "nested_data.h"
 
 #define MAX_SAMPLES 1
 
@@ -84,7 +85,11 @@ int main(int argc, char *argv[])
 	if ((rc > 0) && (infos[0].valid_data))
 	{
 		msg = (interoperability_test_Nested *)samples[0];
-		printf("Received: %s { inner: { a: \"%d\", b: \"%d\", c: \"%d\" }, level: \"%lld\", other: \"%d\", last: \"%d\"  }\n", interoperability_test_Nested_desc.m_typename, msg->inner.a, msg->inner.b, msg->inner.a, msg->level, msg->other, msg->last);
+		printf("Received: %s { inner: { a: \"%d\", b: \"%d\", c: \"%d\" }, level: \"%lld\", other: \"%d\", last: \"%d\"  }\n", interoperability_test_Nested_desc.m_typename, msg->inner.a, msg->inner.b, msg->inner.c, msg->level, msg->other, msg->last);
+		if (!interoperability_test_nested_is_expected(msg))
+		{
+			DDS_FATAL("Received Nested data does not match expected test data\n");
+		}
 	}
 
 	// Sleep to allow sending acknowledgements
